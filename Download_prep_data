@@ -1,0 +1,32 @@
+#The first thing we'll do is install openpyxl (formerly xlrd), a module that pandas requires to read Excel files.
+import piplite
+
+await piplite.install(['openpyxl==3.0.9', 'seaborn'])
+
+Import Primary Modules:
+
+import numpy as np  # useful for many scientific computing in Python
+import pandas as pd # primary data structure library
+from PIL import Image # converting images into arrays
+
+#download data by passing in URL
+from js import fetch
+import io
+
+URL = 'to_be_filled'
+resp = await fetch(URL)
+text = io.BytesIO((await resp.arrayBuffer()).to_py())
+
+dataframe = pd.read_excel(
+    text,
+    sheet_name='to_be_filled',
+    skiprows=range(20),
+    skipfooter=2)
+
+print('Data downloaded and read into a dataframe!')
+
+#display data
+df_can.head()
+
+# print the dimensions of the dataframe
+print(df_can.shape)
