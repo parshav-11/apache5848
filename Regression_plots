@@ -1,0 +1,86 @@
+# install seaborn
+# !pip3 install seaborn
+
+# import library
+import seaborn as sns
+
+print('Seaborn installed and imported!')
+
+#Create a new dataframe that stores that total number of landed immigrants to Canada per year from 1980 to 2013.
+
+# we can use the sum() method to get the total population per year
+df_tot = pd.DataFrame(df_can[years].sum(axis=0))
+
+# change the years to type float (useful for regression later on)
+df_tot.index = map(float, df_tot.index)
+
+# reset the index to put in back in as a column in the df_tot dataframe
+df_tot.reset_index(inplace=True)
+
+# rename columns
+df_tot.columns = ['year', 'total']
+
+# view the final dataframe
+df_tot.head()
+
+#With seaborn, generating a regression plot is as simple as calling the regplot function.
+
+sns.regplot(x='year', y='total', data=df_tot)
+
+#This is not magic; it is seaborn! You can also customize the color of the scatter plot and regression line. Let's change the color to green.
+
+sns.regplot(x='year', y='total', data=df_tot, color='green')
+plt.show()
+
+#You can always customize the marker shape, so instead of circular markers, let's use +.
+ax = sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+')
+plt.show()
+
+#Let's blow up the plot a little so that it is more appealing to the sight.
+plt.figure(figsize=(15, 10))
+sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+')
+plt.show()
+
+#And let's increase the size of markers so they match the new size of the figure, and add a title and x- and y-labels.
+
+plt.figure(figsize=(15, 10))
+ax = sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+', scatter_kws={'s': 200})
+
+ax.set(xlabel='Year', ylabel='Total Immigration') # add x- and y-labels
+ax.set_title('Total Immigration to Canada from 1980 - 2013') # add title
+plt.show()
+
+#And finally increase the font size of the tickmark labels, the title, and the x- and y-labels so they don't feel left out!
+
+plt.figure(figsize=(15, 10))
+
+sns.set(font_scale=1.5)
+
+ax = sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+', scatter_kws={'s': 200})
+ax.set(xlabel='Year', ylabel='Total Immigration')
+ax.set_title('Total Immigration to Canada from 1980 - 2013')
+plt.show()
+
+#If you are not a big fan of the purple background, you can easily change the style to a white plain background.
+
+plt.figure(figsize=(15, 10))
+
+sns.set(font_scale=1.5)
+sns.set_style('ticks')  # change background to white background
+
+ax = sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+', scatter_kws={'s': 200})
+ax.set(xlabel='Year', ylabel='Total Immigration')
+ax.set_title('Total Immigration to Canada from 1980 - 2013')
+plt.show()
+
+#Or to a white background with gridlines.
+
+plt.figure(figsize=(15, 10))
+
+sns.set(font_scale=1.5)
+sns.set_style('whitegrid')
+
+ax = sns.regplot(x='year', y='total', data=df_tot, color='green', marker='+', scatter_kws={'s': 200})
+ax.set(xlabel='Year', ylabel='Total Immigration')
+ax.set_title('Total Immigration to Canada from 1980 - 2013')
+plt.show()
