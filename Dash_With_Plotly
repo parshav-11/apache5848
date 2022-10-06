@@ -1,0 +1,36 @@
+import dash
+import dash_html_components as html
+import dash_core_components as dcc
+
+#create dash application
+app = dash.Dash()
+
+#Get the layout of the application and adjust it
+#This is the division in the layout and from here we will add elements to our page
+app.layout = html.Div{[
+              #Title to our application using HTML H1 component
+              html.H1('Data Visualization in Python',
+              #Adding CSS style using style parameter which takes input through dictionary
+              style = {'color':'blue, 'fontSize':40,'border_style':'outset'}),
+              html.Label('Dropdown'),
+              #Add Dropdown
+              dcc.Dropdown(
+              options = [
+              {'label':'Option 1','value': 1},
+              {'label':'Option 2','value': 2},
+              {'label':'Option 3','value': 3}
+              ],
+              value = '3',
+              ),
+              #Adding Slider
+              dcc.Slider(
+              min=0,
+              max=5,
+              marks={i: '{}'.format(i) for i in range(5)},
+              value=2,
+              )
+              ]
+              )
+if __name__ == 'main':
+  #Grab the application and run the server
+  app.run_server(port=8002, host = '127.0.0.1', debug = True)
