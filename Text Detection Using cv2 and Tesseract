@@ -1,0 +1,43 @@
+import cv2
+import os
+import pytesseract
+import picamera
+from picamera.array import PiRGBArray
+import re
+
+camera =picamera.PiCamera()
+camera.resolution = (640, 480)
+camera.framerate = 60
+camera.brightness = 50
+
+count = 0
+
+while True:
+
+		#capture image using capture function of picamera module
+		camera.capture('/home/pi/Desktop/image2.jpg')
+		img = cv2.imread('/home/pi/Desktop/image2.jpg')
+		print('picture captured')
+
+		#extract text from image using tesseract
+		text = pytesseract.image_to_string(img)
+		print(text)
+
+		#create a pattern to search in the image captured
+		pattern = "Access|Attendance"
+
+		#use regular expression function search if the pattern is in string captured by camera
+		if (re.search(pattern,text)):
+			count += 1
+			print(count)
+		else:
+			print('error')
+
+		#automatic updation and deletion of images from system
+		if os.path.exists("/home/pi/Desktop/image2.jpg"):
+			os.remove("/home/pi/Desktop/image2.jpg")
+		else:
+			print("The file does not exits")
+
+cv2.destroyAllWindows()
+
