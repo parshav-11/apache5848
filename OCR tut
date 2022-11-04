@@ -1,0 +1,83 @@
+import cv2
+import PIL/from PIL import Image
+import pytesseract
+
+im_file = "FILE_PATH"
+im = Image.open(im_file)
+im.show()
+
+#Save an image
+im.save("NEW_FILE_PATH")
+
+#Display image function
+def display(im_path):
+  dpi = 80
+  im_data = plt.imread(im_path)
+  height, width, depth = im_data.shape
+  
+  #What size does the figure needs to be in inches to fit the image
+  figsize = width / float(dpi), height / float(dpi)
+  
+  #create a figure of the right size with one axis that takes up the entire image
+  fig = plt.figure(figsize=figsize)
+  ax = fig.add_axes([0,0,1,1])
+  
+  #Hide spins, ticks, etc
+  ax.axis('off')
+  
+  #Display the image
+  ax.imshow(im_data,cmap = 'gray')
+  plt.show()
+  
+#Inverted Image
+inverted_image = cv2.bitwise_not(img)
+#Save Image
+cv2.imwrite("temp/img.jpg", inverted_image)
+#Rescaling
+
+#Binarization
+def grayscale(image):
+  return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray_image = grayscale(img)
+cv2.write("temp/gray_image.jpg", gray_image)
+#Convert image to black and white
+thresh, im_bw = cv2.threshold(gray_image, 127, 255, cv2.THRESH_BINARY)
+cv2.imwrite("temp/bw_image.jpg", im_bw)
+
+#Noise Removal
+def noise_removal(image):
+  import numpy as np
+  kernel = np.ones((1,1), np.uint8)
+  image = cv2.dilate(image, kernel, iterations = 1)
+  kernel = np.ones((1,1), np.uint8)
+  image = cv2.erode(image, kernel1, iterations)
+  image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+  image = cv2.medianBlur(image, 3)
+  return (image)
+
+#Call noise removal function
+no_noise = noise_removal(im_bw)
+cv2.imwrite('temp/no_noise.jpg', no_noise)
+
+#Dilation and Erosion
+def thin_font(image):
+  import numpy as np
+  image = cv2.bitwise_not(image)
+  kernel = np.ones((2,2), np.uint8)
+  image = cv2.erode(image, kernel, iterations = 1)
+  image = cv2.bitwise_not(image)
+  return (image)
+
+eroded_image = thin_font(no_noise)
+cv2.imwrite('temp/eroded.jpg', eroded_image)
+
+def thick_font(image):
+  import numpy as np
+  image = cv2.bitwise_not(image)
+  kernel = np.ones((2,2), np.uint8)
+  image = cv2.dilate(image, kernel, iterations = 1)
+  image = cv2.bitwise_not(image)
+  return (image)
+
+dilated_image = thick_font(no_noise)
+cv2.imwrite('temp/dilated.jpg', dilated_image)
