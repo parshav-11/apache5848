@@ -17,14 +17,14 @@ while True:
     _, threshold = cv2.threshold(gray_belt, 80, 255, cv2.THRESH_BINARY)
     
     # Detect the pattern
-    _, contour, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         (x, y, w, h) = cv2.boundingRect(cnt)
         
         # area
         area = cv2.contourArea(cnt)
         cv2.putText(belt, str(area), (x, y), 0, 1, (0, 255, 0))
-        cv2.reactangle(belt, (x, y), (x + w, y + h), (255, 255, 0), 3)
+        cv2.rectangle(belt, (x, y), (x + w, y + h), (255, 255, 0), 3)
     
     cv2.imshow('frame', frame)
     cv2.imshow('belt', belt)
