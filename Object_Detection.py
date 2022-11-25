@@ -9,15 +9,15 @@ cap = cv2.VideoCapture(0)
 #Conveyor lib
 relay = conveyor_lib.Conveyor()
 while True:
-    _, frame = cap.read()
+    ret, frame = cap.read()
     
     # belt
     belt = frame[209:327,137:280]
     gray_belt = cv2.cvtColor(belt, cv2.COLOR_BGR2GRAY)
-    _, threshold = cv2.threshold(gray_belt, 80, 255, cv2.THRESH_BINARY)
+    ret, threshold = cv2.threshold(gray_belt, 80, 255, cv2.THRESH_BINARY)
     
     # Detect the pattern
-    _, contours, _ = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, heirarchy = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for cnt in contours:
         (x, y, w, h) = cv2.boundingRect(cnt)
         
