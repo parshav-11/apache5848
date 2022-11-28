@@ -1,14 +1,17 @@
-from PIL import Image
-import pytesseract
 import numpy as np
 import os
 import cv2
 import time
 import shutil
+from PIL import Image
+import matplotlib.pyplot as plt
+import keras_ocr
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-#name path to image files
-image_frames = r'C:\Users\madhu\image_frames'
+# keras-ocr will automatically download pretrained
+# weights for the detector and recognizer.
+pipeline = keras_ocr.pipeline.Pipeline()
+
+image_frames = r'E:\PyPi Project\image_frames'
 def files():
     try:
         if not os.path.exists(image_frames):
@@ -38,11 +41,18 @@ def process(src_vid):
         if index % 1 == 0:
             cv2.imwrite(name, threshold)
             index += 1
-        for i in os.listdir(image_frames):
-            my_example = Image.open(r'C:\Users\madhu\image_frames\frame0.png')
-            text = pytesseract.image_to_string(my_example)
-            print(text)
+#         for i in os.listdir(image_frames):
+#             my_example = Image.open(r'C:\Users\madhu\image_frames\frame0.png')
+#             text = pytesseract.image_to_string(my_example)
+#             print(text)
         #shutil.rmtree(image_frames)
+        images = [keras_ocr.tools.read(threshold) for threshold in [r'E:\PyPi Project\image_frames\frame0.png']]
+        prediction_groups = pipeline.recognize(images)
+        # Plot the predictions
+        fig, axs = plt.subplots(nrows=len(images), figsize=(20, 20))
+        for ax, image, predictions in zip(axs, images, prediction_groups):
+            keras_ocr.tools.drawAnnotations(image=image, predictions=predictions, ax=ax)
+        
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     src_vid.release()
