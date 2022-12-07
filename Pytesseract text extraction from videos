@@ -1,0 +1,79 @@
+from PIL import Image
+import pytesseract
+import numpy as np
+import os
+import cv2
+import time
+import shutil
+from paddleocr import PaddleOCR,draw_ocr
+
+#ocr = PaddleOCR(use_angle_cls=True, lang='en')
+
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+#name path to image files
+image_frames = r'C:\Users\madhu\image_frames'
+def files():
+    try:
+        if os.path.exists(image_frames):
+            shutil.rmtree(image_frames)
+            print('Directory removed successfully')
+        else:
+            os.makedirs(image_frames)
+            print('directory created successfully')
+    except OSError:
+        pass
+    #specify the source of video file
+    src_vid = cv2.VideoCapture(r"C:\Users\madhu\Downloads\near by belt.mp4")
+    return src_vid
+
+def process(src_vid):
+    #Use an index to integer-name the files
+    while src_vid.isOpened():
+        ret, image = src_vid.read()
+        image = image[680:810,150:640]
+#         kernel = np.ones((2,2), np.uint8)
+#         image = cv2.dilate(image, kernel, iterations = 2)
+#         kernel = np.ones((1,1), np.uint8)
+#         image = cv2.erode(image, kernel, iterations)
+#         image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)
+#         image = cv2.medianBlur(image, 3)
+        gray_frame = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        _, threshold = cv2.threshold(gray_frame, 127, 255, cv2.THRESH_BINARY)
+#         scharr = cv2.Scharr(threshold, cv2.CV_64F, 1, 0)
+#         _, threshold = cv2.threshold(gray_frame, 127, 255, cv2.THRESH_BINARY_INV)
+        
+        time.sleep(0)
+        cv2.imshow('image', image)
+        cv2.imshow('threshold', threshold)
+        if not ret:
+            break
+        
+        index = 0
+        #name each frame and save an image
+        name = "./image_frames/frame" +str(index)+ ".png"
+        #save every 100th frame
+        if index % 1 == 0:
+            cv2.imwrite(name, threshold)
+            index += 1
+        for i in os.listdir(image_frames):
+            my_example = Image.open(r'C:\Users\madhu\image_frames\frame0.png')
+            text = pytesseract.image_to_string(my_example)
+            print(text)
+        #shutil.rmtree(image_frames)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+    src_vid.release()
+    cv2.destroyAllWindows()
+# def canny(image):
+#     contours,_=cv2.findContours(image,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+#     for cnt in contours:
+#         x,y,w,h = cv2.boundingRect(cnt)
+#         rect = cv2.rectangle(image, (x,y), (x + w, y + h), (0,255,0), 2)
+#         cropped = image[y:y + h, x:x + w]
+#     return cv2.Canny(cropped, 165, 200)    
+
+
+#main driver
+if __name__ == '__main__':
+    vid = files()
+    process(vid)
